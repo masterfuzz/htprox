@@ -8,12 +8,13 @@ import (
 
 type Gateway struct {
     listenAddr string
-    // endpoints
+    ends map[string]int
 }
 
 func NewGateway(listen string) Gateway {
     c := Gateway{
-        listenAddr: listen}
+        listenAddr: listen,
+        ends: make(map[string]int)}
     return c
 }
 
@@ -31,8 +32,14 @@ func (g *Gateway) httpRegister(w http.ResponseWriter, r *http.Request) {
     log.Printf("%v: %v", r.Method, r.URL.Path)
     name := r.FormValue("name")
 
-    log.Printf("Register: %v", name)
+    _, prs := g.ends[name]
+    if prs {
+        log.Printf("Endpoint %v already registered", name)
+        http.Error(w, "ALREADY REGISTERED", 409)
+    } else {
+        g.ends[name] = 0
+        log.Printf("Registered %v", name)
+        http.Error(w, "REGISTERED", 201)
+    }
 }
 
-func (g *Gateway) Register(endpoint string) {
-}
