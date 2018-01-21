@@ -1,7 +1,4 @@
-///////
-// htp_client listens on a local port and relays data to/from the gateway
-
-package htp_client
+package htprox
 
 import (
 	"net"
