@@ -12,6 +12,17 @@ htprox -gateway -local 0.0.0.0:80
 Will start an htprox gateway server on port 80.
 This will handle connection requests from "clients" and communicate with "servers"
 
+### Endpoints
+* `/register?name=<name>` - Register `<name>` as an endpoint
+* `/release?name=<name>` - Release endpoint
+* `/open?name=<name>` - Start a new session on endpoint `<name>`. Will return a new ID on success
+* `/close?name=<name>&id=<id>` - Close a session
+* `/send?name=<name>&id=<id>` - PUT data to this endpoint to send data to that session buffer
+* `/recv?name=<name>&id=<id>` - GET data from this session buffer
+* `/poll?name=<name>` - Check if any sessions have non-empty buffers
+* `/status` - View overall status of the gateway
+
+
 ## Server
 ```
 htprox -server -local :22 -remote gateway-name:80 -endpoint ssh
