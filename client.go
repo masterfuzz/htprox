@@ -1,10 +1,11 @@
 package main
 
 import (
-	"net"
-	//"net/http"
-	"io"
+	//"io"
 	"log"
+	"net"
+	"net/http"
+	"net/url"
 )
 
 type Client struct {
@@ -42,12 +43,29 @@ func (c *Client) Run() {
 			log.Fatal(err)
 		}
 
-		go handle(conn)
+		go c.handle(conn)
 	}
 }
 
-func handle(c net.Conn) {
+func (c *Client) handle(conn net.Conn) {
 	log.Print("Connection accepted")
-	io.Copy(c, c)
-	c.Close()
+
+	// Open connection on gateway
+	res, err := http.PostForm("http://"+c.gatewayAddr+"/open", url.Values{"name": {c.endpoint}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res.StatusCode != 200 {
+		log.Printf("Connection not accepted at gateway: %v", res.Status)
+		conn.Close()
+		return
+	}
+	// get id
+
+	log.Print("Connection accepted at gateway. ID: 0")
+	req, err := http.NewRequest("PUT", "http://"+c.gatewayAddr+"/send", conn)
+	http.DefaultClient.Do(req)
+
+	conn.Close()
+	http.PostForm("http://"+c.gatewayAddr+"/close", url.Values{"id": {"0"}})
 }

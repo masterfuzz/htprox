@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -19,10 +18,12 @@ func NewGateway(listen string) Gateway {
 }
 
 func (g Gateway) Run() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", r.URL.Path)
-	})
 	http.HandleFunc("/register", g.httpRegister)
+	http.HandleFunc("/release", g.httpRelease)
+	http.HandleFunc("/open", g.httpOpen)
+	http.HandleFunc("/close", g.httpClose)
+	http.HandleFunc("/recv", g.httpRecv)
+	http.HandleFunc("/send", g.httpSend)
 
 	log.Printf("Listening on %v", g.listenAddr)
 	log.Fatal(http.ListenAndServe(g.listenAddr, nil))
@@ -41,4 +42,22 @@ func (g *Gateway) httpRegister(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Registered %v", name)
 		http.Error(w, "REGISTERED", 201)
 	}
+}
+
+func (g *Gateway) httpRelease(w http.ResponseWriter, r *http.Request) {
+	log.Printf("%v: %v", r.Method, r.URL.Path)
+}
+
+func (g *Gateway) httpOpen(w http.ResponseWriter, r *http.Request) {
+	log.Printf("%v: %v", r.Method, r.URL.Path)
+}
+
+func (g *Gateway) httpClose(w http.ResponseWriter, r *http.Request) {
+	log.Printf("%v: %v", r.Method, r.URL.Path)
+}
+func (g *Gateway) httpRecv(w http.ResponseWriter, r *http.Request) {
+	log.Printf("%v: %v", r.Method, r.URL.Path)
+}
+func (g *Gateway) httpSend(w http.ResponseWriter, r *http.Request) {
+	log.Printf("%v: %v", r.Method, r.URL.Path)
 }

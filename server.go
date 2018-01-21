@@ -40,7 +40,7 @@ func (s *Server) Run() {
 }
 
 func (s *Server) register() {
-	res, err := http.PostForm(s.gatewayAddr+"/register", url.Values{"name": {s.endpoint}})
+	res, err := http.PostForm("http://"+s.gatewayAddr+"/register", url.Values{"name": {s.endpoint}})
 	if err != nil {
 		panic(err)
 	}

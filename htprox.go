@@ -6,41 +6,42 @@ import (
 )
 
 var (
-	isServer  = flag.Bool("server", false, "Start Server")
-	isClient  = flag.Bool("client", false, "Start Client")
-	isGateway = flag.Bool("gateway", false, "Start Gateway")
-	listen    = flag.String("listen", ":80", "Incomming port")
-	gateAddr  = flag.String("gate-addr", ":80", "Gateway address (for client or server)")
-	endpoint  = flag.String("endpoint", "default", "Endpoint to reach/register on gateway")
+	isServer   = flag.Bool("server", false, "Start Server")
+	isClient   = flag.Bool("client", false, "Start Client")
+	isGateway  = flag.Bool("gateway", false, "Start Gateway")
+	localAddr  = flag.String("local", ":9999", "Address to listen on (client/gateway) or to connect to (server)")
+	remoteAddr = flag.String("remote", ":9999", "Gateway address (for client or server)")
+	endpoint   = flag.String("endpoint", "default", "Endpoint to reach/register on gateway")
 )
 
 func main() {
 	flag.Parse()
-	log.Print("Hello")
 
 	if *isServer {
 		startServer()
 	} else if *isClient {
 		startClient()
-	} else {
+	} else if *isGateway {
 		startGateway()
+	} else {
+		log.Fatal("Must specify one of client, server, or gateway")
 	}
 }
 
 func startClient() {
-	log.Print("Starting Client session")
-	client := NewClient(*listen, *gateAddr, *endpoint)
+	log.Print("Starting Client")
+	client := NewClient(*localAddr, *remoteAddr, *endpoint)
 	client.Run()
 }
 
 func startServer() {
 	log.Print("Starting Server")
-	server := NewServer(*listen, *gateAddr, *endpoint)
+	server := NewServer(*localAddr, *remoteAddr, *endpoint)
 	server.Run()
 }
 
 func startGateway() {
 	log.Print("Starting Gateway")
-	gateway := NewGateway(*listen)
+	gateway := NewGateway(*localAddr)
 	gateway.Run()
 }
