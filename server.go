@@ -1,4 +1,4 @@
-package htprox
+package main
 
 import (
 	"log"
