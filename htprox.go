@@ -12,6 +12,7 @@ var (
 	localAddr  = flag.String("local", ":9999", "Address to listen on (client/gateway) or to connect to (server)")
 	remoteAddr = flag.String("remote", ":9999", "Gateway address (for client or server)")
 	endpoint   = flag.String("endpoint", "default", "Endpoint to reach/register on gateway")
+	noStatus   = flag.Bool("no-status", false, "Don't server /status page (and don't parse templates)")
 )
 
 func main() {
@@ -43,5 +44,6 @@ func startServer() {
 func startGateway() {
 	log.Print("Starting Gateway")
 	gateway := NewGateway(*localAddr)
+	gateway.noStatus = *noStatus
 	gateway.Run()
 }

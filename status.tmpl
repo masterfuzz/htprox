@@ -1,0 +1,12 @@
+<html>
+    <head><title>Gateway Status</title></head>
+    <body>
+        <h1>Gateway Status</h1>
+        <ul>{{range $key, $value := .}}
+            <li>{{$key}}:<ul>{{range $sid, $closed := $value}}
+                <li>{{$sid}}: {{if $closed}}Closed{{else}}Open{{end}}</li>
+            {{end}}</ul><br><a href="/release?name={{$key}}">Release</a></li>
+        {{end}}</ul>
+    </body>
+</html>
+

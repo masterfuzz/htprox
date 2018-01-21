@@ -55,14 +55,17 @@ func (c *Client) handle(conn net.Conn) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if res.StatusCode != 200 {
+	if res.StatusCode != 201 {
 		log.Printf("Connection not accepted at gateway: %v", res.Status)
 		conn.Close()
 		return
 	}
 	// get id
+	var idBuf []byte
+	res.Body.Read(idBuf)
+	id := idBuf[0]
 
-	log.Print("Connection accepted at gateway. ID: 0")
+	log.Print("Connection accepted at gateway. ID: %v", id)
 	req, err := http.NewRequest("PUT", "http://"+c.gatewayAddr+"/send", conn)
 	http.DefaultClient.Do(req)
 
